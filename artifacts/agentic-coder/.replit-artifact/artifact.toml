@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Agentic Coder"
+version = "1.0.0"
+id = "artifacts/agentic-coder"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23640
+
+[services.development]
+run = "pnpm --filter @workspace/agentic-coder run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/agentic-coder", "run", "build" ]
+publicDir = "artifacts/agentic-coder/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23640"
+BASE_PATH = "/"

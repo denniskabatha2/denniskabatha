@@ -1,22 +1,30 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Agentic Coder API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: models
+    description: Ollama model management
+  - name: chat
+    description: Streaming chat
+  - name: files
+    description: File system operations
+  - name: execute
+    description: Command execution
+  - name: project
+    description: Project analysis
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +32,395 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /models:
+    get:
+      operationId: listModels
+      tags: [models]
+      summary: List available Ollama models
+      responses:
+        "200":
+          description: List of models
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OllamaModel"
+
+  /models/status:
+    get:
+      operationId: getOllamaStatus
+      tags: [models]
+      summary: Check if Ollama is reachable and get current status
+      responses:
+        "200":
+          description: Ollama status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OllamaStatus"
+
+  /chat/sessions:
+    get:
+      operationId: listSessions
+      tags: [chat]
+      summary: List chat sessions
+      responses:
+        "200":
+          description: Sessions list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChatSession"
+    post:
+      operationId: createSession
+      tags: [chat]
+      summary: Create a new chat session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatSessionInput"
+      responses:
+        "201":
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatSession"
+
+  /chat/sessions/{sessionId}:
+    get:
+      operationId: getSession
+      tags: [chat]
+      summary: Get a session with its messages
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Session with messages
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatSessionWithMessages"
+    delete:
+      operationId: deleteSession
+      tags: [chat]
+      summary: Delete a session
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /chat/sessions/{sessionId}/messages:
+    get:
+      operationId: getMessages
+      tags: [chat]
+      summary: Get messages for a session
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Messages list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChatMessage"
+
+  /files/tree:
+    post:
+      operationId: getFileTree
+      tags: [files]
+      summary: Get directory tree structure
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FileTreeRequest"
+      responses:
+        "200":
+          description: Directory tree
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileTreeNode"
+
+  /files/read:
+    post:
+      operationId: readFile
+      tags: [files]
+      summary: Read file content (with optional chunking)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FileReadRequest"
+      responses:
+        "200":
+          description: File content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileReadResult"
+
+  /files/write:
+    post:
+      operationId: writeFile
+      tags: [files]
+      summary: Write or update file content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FileWriteRequest"
+      responses:
+        "200":
+          description: Write result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileOpResult"
+
+  /files/delete:
+    post:
+      operationId: deleteFile
+      tags: [files]
+      summary: Delete a file or folder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FileDeleteRequest"
+      responses:
+        "200":
+          description: Delete result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileOpResult"
+
+  /files/mkdir:
+    post:
+      operationId: createDirectory
+      tags: [files]
+      summary: Create a directory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MkdirRequest"
+      responses:
+        "200":
+          description: Mkdir result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileOpResult"
+
+  /files/patch:
+    post:
+      operationId: patchFile
+      tags: [files]
+      summary: Apply a targeted patch (search and replace) to a file
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilePatchRequest"
+      responses:
+        "200":
+          description: Patch result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileOpResult"
+
+  /files/search:
+    post:
+      operationId: searchInFiles
+      tags: [files]
+      summary: Search for text across files in a directory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FileSearchRequest"
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FileSearchResult"
+
+  /execute:
+    post:
+      operationId: executeCommand
+      tags: [execute]
+      summary: Execute a shell command and get output
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExecuteRequest"
+      responses:
+        "200":
+          description: Execution result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExecuteResult"
+
+  /execute/sessions:
+    get:
+      operationId: listTerminalSessions
+      tags: [execute]
+      summary: List active terminal sessions
+      responses:
+        "200":
+          description: Terminal sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TerminalSession"
+
+  /execute/sessions/{terminalId}/kill:
+    post:
+      operationId: killTerminalSession
+      tags: [execute]
+      summary: Kill a running terminal session
+      parameters:
+        - name: terminalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Kill result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileOpResult"
+
+  /project/analyze:
+    post:
+      operationId: analyzeProject
+      tags: [project]
+      summary: Analyze project structure and produce a summary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectAnalyzeRequest"
+      responses:
+        "200":
+          description: Project summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectSummary"
+
+  /project/relevant:
+    post:
+      operationId: findRelevantFiles
+      tags: [project]
+      summary: Find files most relevant to a task description
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RelevantFilesRequest"
+      responses:
+        "200":
+          description: Relevant files ranked by relevance
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RelevantFile"
+
+  /project/workspaces:
+    get:
+      operationId: listWorkspaces
+      tags: [project]
+      summary: List configured project workspaces
+      responses:
+        "200":
+          description: Workspaces list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Workspace"
+    post:
+      operationId: addWorkspace
+      tags: [project]
+      summary: Add a workspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WorkspaceInput"
+      responses:
+        "201":
+          description: Workspace added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workspace"
+
+  /project/workspaces/{workspaceId}:
+    delete:
+      operationId: removeWorkspace
+      tags: [project]
+      summary: Remove a workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Removed
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +431,481 @@ components:
       required:
         - status
 
+    OllamaModel:
+      type: object
+      properties:
+        name:
+          type: string
+        size:
+          type: integer
+        modified_at:
+          type: string
+        digest:
+          type: string
+      required:
+        - name
+        - size
+
+    OllamaStatus:
+      type: object
+      properties:
+        reachable:
+          type: boolean
+        url:
+          type: string
+        modelCount:
+          type: integer
+        error:
+          type: ["string", "null"]
+      required:
+        - reachable
+        - url
+        - modelCount
+
+    ChatSession:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        model:
+          type: string
+        workspacePath:
+          type: ["string", "null"]
+        systemPrompt:
+          type: ["string", "null"]
+        messageCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - name
+        - model
+        - messageCount
+        - createdAt
+        - updatedAt
+
+    ChatSessionInput:
+      type: object
+      properties:
+        name:
+          type: string
+        model:
+          type: string
+        workspacePath:
+          type: string
+        systemPrompt:
+          type: string
+      required:
+        - name
+        - model
+
+    ChatSessionWithMessages:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        model:
+          type: string
+        workspacePath:
+          type: ["string", "null"]
+        systemPrompt:
+          type: ["string", "null"]
+        messageCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChatMessage"
+      required:
+        - id
+        - name
+        - model
+        - messageCount
+        - createdAt
+        - updatedAt
+        - messages
+
+    ChatMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+        sessionId:
+          type: integer
+        role:
+          type: string
+        content:
+          type: string
+        toolCalls:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - sessionId
+        - role
+        - content
+        - createdAt
+
+    FileTreeRequest:
+      type: object
+      properties:
+        path:
+          type: string
+        depth:
+          type: integer
+        ignorePatterns:
+          type: array
+          items:
+            type: string
+      required:
+        - path
+
+    FileTreeNode:
+      type: object
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+        type:
+          type: string
+        size:
+          type: ["integer", "null"]
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/FileTreeNode"
+      required:
+        - name
+        - path
+        - type
+
+    FileReadRequest:
+      type: object
+      properties:
+        path:
+          type: string
+        startLine:
+          type: integer
+        endLine:
+          type: integer
+        encoding:
+          type: string
+      required:
+        - path
+
+    FileReadResult:
+      type: object
+      properties:
+        path:
+          type: string
+        content:
+          type: string
+        totalLines:
+          type: integer
+        startLine:
+          type: integer
+        endLine:
+          type: integer
+        truncated:
+          type: boolean
+        size:
+          type: integer
+      required:
+        - path
+        - content
+        - totalLines
+        - startLine
+        - endLine
+        - truncated
+        - size
+
+    FileWriteRequest:
+      type: object
+      properties:
+        path:
+          type: string
+        content:
+          type: string
+        createDirs:
+          type: boolean
+        backup:
+          type: boolean
+      required:
+        - path
+        - content
+
+    FileDeleteRequest:
+      type: object
+      properties:
+        path:
+          type: string
+        recursive:
+          type: boolean
+      required:
+        - path
+
+    MkdirRequest:
+      type: object
+      properties:
+        path:
+          type: string
+        recursive:
+          type: boolean
+      required:
+        - path
+
+    FilePatchRequest:
+      type: object
+      properties:
+        path:
+          type: string
+        patches:
+          type: array
+          items:
+            $ref: "#/components/schemas/FilePatch"
+      required:
+        - path
+        - patches
+
+    FilePatch:
+      type: object
+      properties:
+        search:
+          type: string
+        replace:
+          type: string
+        replaceAll:
+          type: boolean
+      required:
+        - search
+        - replace
+
+    FileOpResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        path:
+          type: string
+      required:
+        - success
+        - message
+
+    FileSearchRequest:
+      type: object
+      properties:
+        rootPath:
+          type: string
+        query:
+          type: string
+        filePattern:
+          type: string
+        maxResults:
+          type: integer
+        caseSensitive:
+          type: boolean
+      required:
+        - rootPath
+        - query
+
+    FileSearchResult:
+      type: object
+      properties:
+        file:
+          type: string
+        line:
+          type: integer
+        content:
+          type: string
+        context:
+          type: string
+      required:
+        - file
+        - line
+        - content
+
+    ExecuteRequest:
+      type: object
+      properties:
+        command:
+          type: string
+        cwd:
+          type: string
+        timeout:
+          type: integer
+        sessionId:
+          type: string
+      required:
+        - command
+
+    ExecuteResult:
+      type: object
+      properties:
+        stdout:
+          type: string
+        stderr:
+          type: string
+        exitCode:
+          type: integer
+        duration:
+          type: integer
+        timedOut:
+          type: boolean
+        sessionId:
+          type: string
+      required:
+        - stdout
+        - stderr
+        - exitCode
+        - duration
+        - timedOut
+
+    TerminalSession:
+      type: object
+      properties:
+        id:
+          type: string
+        command:
+          type: string
+        cwd:
+          type: string
+        running:
+          type: boolean
+        startedAt:
+          type: string
+        pid:
+          type: ["integer", "null"]
+      required:
+        - id
+        - command
+        - running
+        - startedAt
+
+    ProjectAnalyzeRequest:
+      type: object
+      properties:
+        path:
+          type: string
+        includeStats:
+          type: boolean
+      required:
+        - path
+
+    ProjectSummary:
+      type: object
+      properties:
+        path:
+          type: string
+        name:
+          type: string
+        fileCount:
+          type: integer
+        totalSize:
+          type: integer
+        languages:
+          type: array
+          items:
+            $ref: "#/components/schemas/LanguageStat"
+        keyFiles:
+          type: array
+          items:
+            type: string
+        gitBranch:
+          type: ["string", "null"]
+        hasGit:
+          type: boolean
+      required:
+        - path
+        - name
+        - fileCount
+        - totalSize
+        - languages
+        - keyFiles
+        - hasGit
+
+    LanguageStat:
+      type: object
+      properties:
+        language:
+          type: string
+        fileCount:
+          type: integer
+        percentage:
+          type: number
+      required:
+        - language
+        - fileCount
+        - percentage
+
+    RelevantFilesRequest:
+      type: object
+      properties:
+        rootPath:
+          type: string
+        task:
+          type: string
+        maxFiles:
+          type: integer
+      required:
+        - rootPath
+        - task
+
+    RelevantFile:
+      type: object
+      properties:
+        path:
+          type: string
+        score:
+          type: number
+        reason:
+          type: string
+        size:
+          type: integer
+      required:
+        - path
+        - score
+        - reason
+        - size
+
+    Workspace:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        path:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - path
+        - createdAt
+
+    WorkspaceInput:
+      type: object
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+      required:
+        - name
+        - path

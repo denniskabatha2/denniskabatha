@@ -1,0 +1,142 @@
+k.yaml  pnpm-workspace.yaml  replit.md  scripts  tsconfig.base.json  tsconfig.json
+diablo@diablo-HP-Envy-x360-2-in-1-Laptop-14-es0xxx:~/denniskabatha$ code .
+diablo@diablo-HP-Envy-x360-2-in-1-Laptop-14-es0xxx:~/denniskabatha$ # Install Node.js via nvm (recommended)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source ~/.bashrc
+nvm install 20
+nvm use 20
+
+# Install pnpm
+npm install -g pnpm
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 16555  100 16555    0     0  20912      0 --:--:-- --:--:-- --:--:-- 20902
+=> nvm is already installed in /home/diablo/.nvm, trying to update using git
+=> => Compressing and cleaning up git repository
+
+=> nvm source string already in /home/diablo/.bashrc
+=> bash_completion source string already in /home/diablo/.bashrc
+=> Close and reopen your terminal to start using nvm or run the following to use it now:
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+Downloading and installing node v20.20.2...
+Downloading https://nodejs.org/dist/v20.20.2/node-v20.20.2-linux-x64.tar.xz...
+####################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################### 100.0%
+Computing checksum with sha256sum
+Checksums matched!
+Now using node v20.20.2 (npm v10.8.2)
+Now using node v20.20.2 (npm v10.8.2)
+
+added 1 package in 2s
+
+1 package is looking for funding
+  run `npm fund` for details
+diablo@diablo-HP-Envy-x360-2-in-1-Laptop-14-es0xxx:~/denniskabatha$ sudo apt update
+sudo apt install postgresql postgresql-contrib -y
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+# Create a database
+sudo -u postgres psql -c "CREATE DATABASE agenticcoder;"
+sudo -u postgres psql -c "CREATE USER agentuser WITH PASSWORD '0714400835';"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE agenticcoder TO agentuser;"
+[sudo] password for diablo: 
+Get:1 https://download.docker.com/linux/ubuntu noble InRelease [48.5 kB]
+Get:2 https://brave-browser-apt-nightly.s3.brave.com stable InRelease [7,546 B]
+Get:3 https://download.docker.com/linux/ubuntu noble/stable amd64 Packages [56.9 kB]
+Hit:4 http://ke.archive.ubuntu.com/ubuntu noble InRelease                      
+Hit:5 http://ke.archive.ubuntu.com/ubuntu noble-updates InRelease              
+Get:6 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]      
+Get:7 https://pkgs.tailscale.com/stable/ubuntu noble InRelease                 
+Get:8 https://dl.google.com/linux/chrome/deb stable InRelease [1,825 B]        
+Hit:9 http://ke.archive.ubuntu.com/ubuntu noble-backports InRelease            
+Get:10 https://dl.google.com/linux/chrome-stable/deb stable InRelease [1,825 B]
+Get:11 https://brave-browser-apt-nightly.s3.brave.com stable/main arm64 Packages [124 kB]
+Get:12 https://dl.google.com/linux/chrome/deb stable/main amd64 Packages [1,217 B]
+Get:13 https://brave-browser-apt-nightly.s3.brave.com stable/main amd64 Packages [113 kB]
+Get:14 https://dl.google.com/linux/chrome-stable/deb stable/main amd64 Packages [1,217 B]
+Get:15 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [1,763 kB]
+Get:16 http://security.ubuntu.com/ubuntu noble-security/main i386 Packages [425 kB]
+Get:17 http://security.ubuntu.com/ubuntu noble-security/main Translation-en [275 kB]
+Get:18 http://security.ubuntu.com/ubuntu noble-security/main amd64 Components [44.8 kB]
+Get:19 http://security.ubuntu.com/ubuntu noble-security/main Icons (48x48) [16.1 kB]
+Get:20 http://security.ubuntu.com/ubuntu noble-security/main Icons (64x64) [22.9 kB]
+Get:21 http://security.ubuntu.com/ubuntu noble-security/main amd64 c-n-f Metadata [11.5 kB]
+Get:22 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [3,106 kB]
+Get:23 http://security.ubuntu.com/ubuntu noble-security/restricted Translation-en [721 kB]
+Get:24 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 c-n-f Metadata [444 B]
+Get:25 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1,195 kB]
+Get:26 http://security.ubuntu.com/ubuntu noble-security/universe i386 Packages [806 kB]
+Get:27 http://security.ubuntu.com/ubuntu noble-security/universe Translation-en [232 kB]
+Get:28 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Components [76.2 kB]
+Get:29 http://security.ubuntu.com/ubuntu noble-security/universe Icons (48x48) [51.2 kB]
+Get:30 http://security.ubuntu.com/ubuntu noble-security/universe Icons (64x64) [80.0 kB]
+Get:31 http://security.ubuntu.com/ubuntu noble-security/universe amd64 c-n-f Metadata [23.3 kB]
+Get:32 http://security.ubuntu.com/ubuntu noble-security/multiverse Translation-en [9,248 B]
+Get:33 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 c-n-f Metadata [468 B]
+Fetched 9,349 kB in 4s (2,630 kB/s)                                   
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+69 packages can be upgraded. Run 'apt list --upgradable' to see them.
+N: Skipping acquire of configured file 'main/binary-i386/Packages' as repository 'https://dl.google.com/linux/chrome-stable/deb stable InRelease' doesn't support architecture 'i386'
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+postgresql is already the newest version (16+257build1.1).
+postgresql-contrib is already the newest version (16+257build1.1).
+The following packages were automatically installed and are no longer required:
+  bridge-utils libllvm19 ubuntu-fan
+Use 'sudo apt autoremove' to remove them.
+0 upgraded, 0 newly installed, 0 to remove and 69 not upgraded.
+Synchronizing state of postgresql.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.
+Executing: /usr/lib/systemd/systemd-sysv-install enable postgresql
+CREATE DATABASE
+CREATE ROLE
+GRANT
+diablo@diablo-HP-Envy-x360-2-in-1-Laptop-14-es0xxx:~/denniskabatha$ pnpm install 
+# Push the database schema (creates tables)
+pnpm --filter @workspace/db run push
+Scope: all 9 workspace projects
+Lockfile is up to date, resolution step is skipped
+Packages: +485
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ WARN  Tarball download average speed 9 KiB/s (size 11 KiB) is below 50 KiB/s: https://registry.npmjs.org/@radix-ui/react-radio-group/-/react-radio-group-1.3.8.tgz (GET)
+ WARN  Tarball download average speed 4 KiB/s (size 5 KiB) is below 50 KiB/s: https://registry.npmjs.org/resolve-pkg-maps/-/resolve-pkg-maps-1.0.0.tgz (GET)
+ WARN  Tarball download average speed 21 KiB/s (size 27 KiB) is below 50 KiB/s: https://registry.npmjs.org/undici-types/-/undici-types-7.19.2.tgz (GET)
+ WARN  Tarball download average speed 45 KiB/s (size 68 KiB) is below 50 KiB/s: https://registry.npmjs.org/@radix-ui/react-select/-/react-select-2.2.6.tgz (GET)
+ WARN  Tarball download average speed 29 KiB/s (size 40 KiB) is below 50 KiB/s: https://registry.npmjs.org/@radix-ui/react-toast/-/react-toast-1.2.15.tgz (GET)
+ WARN  13 other warnings
+
+   ╭─────────────────────────────────────────╮
+   │                                         │
+   │   Update available! 10.34.1 → 11.5.2.   │
+   │   Changelog: https://pnpm.io/v/11.5.2   │
+   │    To update, run: pnpm add -g pnpm     │
+   │                                         │
+   ╰─────────────────────────────────────────╯
+
+Downloading react-icons@5.6.0: 22.42 MB/22.42 MB, done
+Progress: resolved 485, reused 0, downloaded 485, added 485, done
+node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild: Running postinstall scrinode_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild: Running postinstall script, done in 109ms
+
+devDependencies:
++ prettier 3.8.3
++ typescript 5.9.3
+
+. preinstall$ sh -c 'rm -f package-lock.json yarn.lock; case "$npm_config_use…
+└─ Done in 35ms
+Done in 20.7s using pnpm v10.34.1
+
+> @workspace/db@0.0.0 push /home/diablo/denniskabatha/lib/db
+> drizzle-kit push --config ./drizzle.config.ts
+
+Reading config file '/home/diablo/denniskabatha/lib/db/drizzle.config.ts'
+DATABASE_URL, ensure the database is provisioned
+/home/diablo/denniskabatha/lib/db:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/db@0.0.0 push: `drizzle-kit push --config ./drizzle.config.ts`
+Exit status 1
+diablo@diablo-HP-Envy-x360-2-in-1-Laptop-14-es0xxx:~/denniskabatha$ 
+
